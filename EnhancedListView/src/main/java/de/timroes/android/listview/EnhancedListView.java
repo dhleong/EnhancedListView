@@ -727,7 +727,15 @@ public class EnhancedListView extends ListView {
                 final View swipeDown = mSwipeDownView;
                 if (swipeDown != null) {
                     // test if the item should be swiped
-                    final int position = getPositionForView(swipeDown) - getHeaderViewsCount();
+                    final int position;
+                    try {
+                        position = getPositionForView(swipeDown) - getHeaderViewsCount();
+                    } catch (final NullPointerException e) {
+                        // overabundance of caution
+                        super.onTouchEvent(ev);
+                        return true;
+                    }
+
                     if ((mShouldSwipeCallback == null) ||
                         mShouldSwipeCallback.onShouldSwipe(this, position)) {
                     mDownX = ev.getRawX();
